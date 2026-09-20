@@ -6,7 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install yamllint
-      - run: yamllint -d "{extends: relaxed, rules: {line-length: disable}}" values manifests dashboards
+      - run: |
+          yamllint -d "{extends: relaxed, rules: {line-length: disable}}" values manifests dashboards
       - uses: azure/setup-helm@v4
       - name: Render charts with our values
         run: |
