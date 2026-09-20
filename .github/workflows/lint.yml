@@ -1,0 +1,16 @@
+name: lint
+on: [push, pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install yamllint
+      - run: yamllint -d "{extends: relaxed, rules: {line-length: disable}}" values manifests dashboards
+      - uses: azure/setup-helm@v4
+      - name: Render charts with our values
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm template kps prometheus-community/kube-prometheus-stack -f values/kube-prometheus-stack.yaml > /dev/null
+          helm template loki grafana/loki -f values/loki.yaml > /dev/null

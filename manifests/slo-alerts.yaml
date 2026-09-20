@@ -1,0 +1,31 @@
+# SLO: 99% of requests succeed; p95 latency < 300ms.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: podinfo-slo
+  namespace: demo
+spec:
+  groups:
+    - name: podinfo.slo
+      rules:
+        - record: podinfo:error_ratio:rate5m
+          expr: |
+            sum(rate(http_request_duration_seconds_count{namespace="demo",status=~"5.."}[5m]))
+            /
+            sum(rate(http_request_duration_seconds_count{namespace="demo"}[5m]))
+        - alert: PodinfoHighErrorRate
+          expr: podinfo:error_ratio:rate5m > 0.01
+          for: 5m
+          labels: { severity: critical }
+          annotations:
+            summary: "Error rate above 1% SLO"
+            runbook: "https://github.com/mrinankmj/k8s-observability-stack/blob/main/docs/runbook.md#high-error-rate"
+        - alert: PodinfoHighLatencyP95
+          expr: |
+            histogram_quantile(0.95,
+              sum by (le) (rate(http_request_duration_seconds_bucket{namespace="demo"}[5m]))) > 0.3
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "p95 latency above 300ms"
+            runbook: "https://github.com/mrinankmj/k8s-observability-stack/blob/main/docs/runbook.md#high-latency"

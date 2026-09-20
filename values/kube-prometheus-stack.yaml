@@ -1,0 +1,22 @@
+grafana:
+  adminPassword: admin          # local lab only
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki:3100
+prometheus:
+  prometheusSpec:
+    retention: 2d
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+alertmanager:
+  config:
+    route:
+      receiver: "null"
+      group_by: [alertname]
+    receivers:
+      - name: "null"
