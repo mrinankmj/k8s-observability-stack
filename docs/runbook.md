@@ -14,3 +14,11 @@
 1. Check the CPU panel for throttling or saturation.
 2. Scale out: `kubectl -n demo scale deploy/podinfo --replicas=4`
 3. Review resource limits if CPU is pinned at the limit.
+
+## Frequent restarts
+**Alert:** `PodinfoFrequentRestarts` (more than 3 restarts in 15m)
+
+1. Check why: `kubectl -n demo describe pod -l app=podinfo | grep -A5 "Last State"`
+2. Look for OOMKilled: if so, raise `resources.limits.memory` in `manifests/demo-app.yaml`.
+3. Check recent logs before the crash: Grafana → Explore → Loki: `{namespace="demo"} |= "panic"` (or the relevant error string).
+4. If it started after a deploy, roll back: `kubectl -n demo rollout undo deploy/podinfo`.
