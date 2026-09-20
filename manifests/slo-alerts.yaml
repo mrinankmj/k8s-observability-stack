@@ -29,3 +29,11 @@ spec:
           annotations:
             summary: "p95 latency above 300ms"
             runbook: "https://github.com/mrinankmj/k8s-observability-stack/blob/main/docs/runbook.md#high-latency"
+        - alert: PodinfoFrequentRestarts
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace="demo", pod=~"podinfo-.*"}[15m]) > 3
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "podinfo pod restarting frequently"
+            runbook: "https://github.com/mrinankmj/k8s-observability-stack/blob/main/docs/runbook.md#frequent-restarts"
