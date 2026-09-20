@@ -7,7 +7,7 @@ Prometheus Operator (kube-prometheus-stack) · Grafana · Loki + Promtail · Ale
 
 ## What's included
 - **ServiceMonitor** auto-discovers the demo app's metrics.
-- **SLO alerts**: error ratio > 1% and p95 latency > 300ms, each linked to a **runbook**.
+- **SLO alerts**: error ratio > 1%, p95 latency > 300ms, and frequent pod restarts — each linked to a **runbook**.
 - **Golden-signals dashboard** provisioned as code (ConfigMap + Grafana sidecar).
 - **Loki** log aggregation, queryable from Grafana.
 - **k6 load test** that injects ~5% errors so you can watch the alerts fire.
