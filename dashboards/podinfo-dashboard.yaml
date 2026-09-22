@@ -10,7 +10,15 @@ data:
       "title": "Podinfo - Golden Signals",
       "schemaVersion": 39,
       "panels": [
-        { "type": "timeseries", "title": "Requests / sec", "gridPos": {"x":0,"y":0,"w":12,"h":8},
+        { "type": "stat", "title": "Availability (5m)", "gridPos": {"x":0,"y":0,"w":6,"h":4},
+          "fieldConfig": { "defaults": { "unit": "percentunit", "decimals": 3,
+            "thresholds": { "mode": "absolute", "steps": [
+              { "value": null, "color": "red" },
+              { "value": 0.99, "color": "yellow" },
+              { "value": 0.999, "color": "green" }
+            ] } } },
+          "targets": [{ "expr": "podinfo:availability:rate5m" }] },
+        { "type": "timeseries", "title": "Requests / sec", "gridPos": {"x":6,"y":0,"w":6,"h":8},
           "targets": [{ "expr": "sum(rate(http_request_duration_seconds_count{namespace=\"demo\"}[1m]))" }] },
         { "type": "timeseries", "title": "Error ratio", "gridPos": {"x":12,"y":0,"w":12,"h":8},
           "targets": [{ "expr": "podinfo:error_ratio:rate5m" }] },
