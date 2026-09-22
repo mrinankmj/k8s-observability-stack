@@ -13,6 +13,8 @@ spec:
             sum(rate(http_request_duration_seconds_count{namespace="demo",status=~"5.."}[5m]))
             /
             sum(rate(http_request_duration_seconds_count{namespace="demo"}[5m]))
+        - record: podinfo:availability:rate5m
+          expr: 1 - podinfo:error_ratio:rate5m
         - alert: PodinfoHighErrorRate
           expr: podinfo:error_ratio:rate5m > 0.01
           for: 5m
